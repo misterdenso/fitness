@@ -16,7 +16,7 @@ BEGIN
 
 
 --declare @DateStart datetime2(3)12345
---declare @DateEnd datetime2(3)
+--declare @DateEnd datetime2(3)123
 
 
 --set @DateStart='40220101'
