@@ -4,9 +4,9 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 -- =============================================
--- Author:		<Author,,Name>
--- Create date: <Create Date,,>
--- Description:	<Description,,>
+-- Author:		Томашевский Д.С.
+-- Create date: 01.04.2022
+-- Description:	Таблица фактов продажи карт
 -- =============================================
 ALTER PROCEDURE [dbo].[UpdateFacts]
 	@DateStart datetime2(3),
