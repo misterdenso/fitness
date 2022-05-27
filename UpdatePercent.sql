@@ -1,3 +1,33 @@
+-- Create a new stored procedure called 'StoredProcedureName' in schema 'SchemaName'
+-- Drop the stored procedure if it already exists
+IF EXISTS (
+SELECT *
+    FROM INFORMATION_SCHEMA.ROUTINES
+WHERE SPECIFIC_SCHEMA = N'dbo'
+    AND SPECIFIC_NAME = N'UpdatePercent'
+)
+DROP PROCEDURE dbo.UpdatePercent
+GO
+-- Create the stored procedure in the specified schema
+CREATE PROCEDURE dbo.UpdatePercent
+    @DateStart datetime2(3),
+	@DateEnd datetime2(3)
+AS
+
+
+declare 	@DateStart10 datetime2(3),
+            @DateStart3mon datetime2(3)
+
+    
+select	@DateStart = dateadd(year,2000,@DateStart),
+		@DateEnd = dateadd(year,2000,@DateEnd)
+
+
+
+select  @DateStart10 = dateadd(DAY, - 10, @DateStart),
+        @DateStart3mon = dateadd(MONTH, -3, @DateStart)
+
+ 
 
 --СегментИсключение
 exec sp_executesql N'--INSERT INTO #tt375 WITH(TABLOCK) (_Q_000_F_000_TYPE, _Q_000_F_000_RTRef, _Q_000_F_000_RRRef, _Q_000_F_001) 
@@ -32,7 +62,7 @@ INNER JOIN dbo._InfoRg3016 T4
 ON T2.Fld3017RRef = T4._Fld3017RRef AND T2.MAXPERIOD_ = T4._Period
 WHERE (T4._Fld4704 = @P4)) T1
 WHERE (T1.Fld3018RRef = @P5)',N'@P1 nvarchar(4000),@P2 numeric(10),@P3 datetime2(3),@P4 numeric(10),@P5 varbinary(16)',
-N'denso',0,'4022-06-01 00:00:00',0,0x8028BF54E6F1BB8244747ACFB274D020
+N'denso',0,@DateEnd,0,0x8028BF54E6F1BB8244747ACFB274D020
 
 
 --ЗакончилисьВТек
@@ -63,7 +93,7 @@ T2._Fld2250_RTRef,
 T2._Fld2250_RRRef,
 T2._Fld2263RRef',N'@P1 nvarchar(4000),@P2 numeric(10),@P3 varbinary(16),@P4 numeric(10),@P5 numeric(10),@P6 numeric(10),
 @P7 datetime2(3),@P8 numeric(10),@P9 datetime2(3),@P10 varbinary(16)',
-N'denso',0,0x811300155D59960211E8E41D1AB55C19,0,0,1,'4022-05-01 00:00:00',1,'4022-06-01 00:00:00',0xBF3C881733694B8F462E8D8B9E26692F
+N'denso',0,0x811300155D59960211E8E41D1AB55C19,0,0,1,@DateStart,1,@DateEnd,0xBF3C881733694B8F462E8D8B9E26692F
 
 
 --ЗакончилисьПред10Дней
@@ -86,7 +116,7 @@ GROUP BY T2._Fld2250_TYPE,
 T2._Fld2250_RTRef,
 T2._Fld2250_RRRef,
 T2._Fld2263RRef',N'@P1 nvarchar(4000),@P2 numeric(10),@P3 numeric(10),@P4 numeric(10),@P5 datetime2(3),@P6 numeric(10),@P7 datetime2(3),@P8 varbinary(16)',
-N'denso',0,0,1,'4022-04-21 00:00:00',1,'4022-05-01 00:00:00',0xBF3C881733694B8F462E8D8B9E26692F
+N'denso',0,0,1,@DateStart10,1,@DateStart,0xBF3C881733694B8F462E8D8B9E26692F
 
 
 --КупилиВТек
@@ -106,7 +136,7 @@ ON (0x08 = T3._Q_000_F_000_TYPE AND 0x00000038 = T3._Q_000_F_000_RTRef AND T2._F
 WHERE ((T1._Fld4704 = @P3)) AND ((T1._Fld3073 >= @P4) AND (T1._Fld3073 <= @P5) AND (T2._Fld2264RRef = @P6) AND T2._Posted = 0x01 
 AND (T3._Q_000_F_000_TYPE IS NULL AND T3._Q_000_F_000_RTRef IS NULL AND T3._Q_000_F_000_RRRef IS NULL))',
 N'@P1 nvarchar(4000),@P2 numeric(10),@P3 numeric(10),@P4 datetime2(3),@P5 datetime2(3),@P6 varbinary(16)',
-N'denso',0,0,'4022-05-01 00:00:00','4022-06-01 00:00:00',0xBF3C881733694B8F462E8D8B9E26692F
+N'denso',0,0,@DateStart,@DateEnd,0xBF3C881733694B8F462E8D8B9E26692F
 
 
 --КупилиРанее
@@ -127,7 +157,7 @@ WHERE ((T1._Fld4704 = @P3)) AND ((T1._Fld3073 < @P4) AND ((DATEADD(SECOND,-@P5,T
 AND (T2._Fld2264RRef = @P8) AND T2._Posted = 0x01 
 AND (T3._Q_000_F_000_TYPE IS NULL AND T3._Q_000_F_000_RTRef IS NULL AND T3._Q_000_F_000_RRRef IS NULL))',
 N'@P1 nvarchar(4000),@P2 numeric(10),@P3 numeric(10),@P4 datetime2(3),@P5 numeric(10),@P6 datetime2(3),@P7 datetime2(3),@P8 varbinary(16)',
-N'denso',0,0,'4022-05-01 00:00:00',1,'4022-06-01 00:00:00','2001-01-01 00:00:00',0xBF3C881733694B8F462E8D8B9E26692F
+N'denso',0,0,@DateStart,1,@DateEnd,'2001-01-01 00:00:00',0xBF3C881733694B8F462E8D8B9E26692F
 
 
 --ЗакончилисьПред3Месяца
@@ -155,7 +185,8 @@ WHERE ((T1._Fld4704 = @P3)) AND ((DATEADD(SECOND,-@P4,T1._Fld3075) >= @P5) AND (
 GROUP BY T2._Fld2250_TYPE,
 T2._Fld2250_RTRef,
 T2._Fld2250_RRRef,
-T2._Fld2263RRef',N'@P1 nvarchar(4000),@P2 numeric(10),@P3 numeric(10),@P4 numeric(10),@P5 datetime2(3),@P6 numeric(10),@P7 datetime2(3),@P8 varbinary(16)',N'denso',0,0,1,'4022-02-01 00:00:00',1,'4022-04-21 00:00:00',0xBF3C881733694B8F462E8D8B9E26692F
+T2._Fld2263RRef',N'@P1 nvarchar(4000),@P2 numeric(10),@P3 numeric(10),@P4 numeric(10),@P5 datetime2(3),@P6 numeric(10),@P7 datetime2(3),@P8 varbinary(16)',
+N'denso',0,0,1,@DateStart3mon,1,@DateStart10,0xBF3C881733694B8F462E8D8B9E26692F
 
 
 --ТаблицаПродлений
@@ -250,14 +281,31 @@ FROM ##tt382 T1 WITH(NOLOCK)
 LEFT OUTER JOIN dbo._Reference51X1 T2
 ON (T1._Q_000_F_001_TYPE = 0x08 AND T1._Q_000_F_001_RTRef = 0x00000033 AND T1._Q_000_F_001_RRRef = T2._IDRRef) AND (T2._Fld4704 = @P3)
 GROUP BY T1._Q_000_F_000RRef,
-(T2._Fld663RRef)',N'@P1 datetime2(3),@P2 nvarchar(4000),@P3 numeric(10)','4022-05-01 00:00:00',N'denso',0
+(T2._Fld663RRef)',N'@P1 datetime2(3),@P2 nvarchar(4000),@P3 numeric(10)',@DateStart,N'denso',0
 
 
 
+delete	
+from	dwh.[dbo].[PercentFacts]
+where	[Date] between dateadd(year,-2000,@DateStart) and dateadd(year,-2000,@DateEnd)
 
 
-select *
-from ##PercentsTable
+
+INSERT INTO dwh.[dbo].[PercentFacts]
+           ([Date]
+           ,[ClubID]
+           ,[ManagerID]
+           ,[Expired]
+           ,[Continued])
+select  dateadd(year,-2000,[Date]),
+        sys.fn_varbintohexstr(t.ClubID),
+        sys.fn_varbintohexstr(t.ManagerID),
+        t.Expired,
+        t.Continued
+from    ##PercentsTable t
+
+
+
 
 
 
