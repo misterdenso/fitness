@@ -27,7 +27,7 @@ while month(@i)<=month(@DateEnd) and  year(@i)<=year(@DateEnd)
 	begin
 
 		select	@Start = DATEADD(month, DATEDIFF(month, 0, @i), 0),
-				@End = DATEADD(month, DATEDIFF(month, 0, @i) + 1, 0) 
+				@End = DATEADD(SECOND,-1, DATEADD(month, DATEDIFF(month, 0, @i) + 1, 0) )
 
         exec dbo.UpdatePercent  @Start, @End
 
