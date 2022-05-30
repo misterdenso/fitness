@@ -23,7 +23,7 @@ declare @i datetime2(3),
 select @i = @DateStart
 
 
-while month(@i)<=month(@DateEnd)
+while month(@i)<=month(@DateEnd) and  year(@i)<=year(@DateEnd)
 	begin
 
 		select	@Start = DATEADD(month, DATEDIFF(month, 0, @i), 0),
