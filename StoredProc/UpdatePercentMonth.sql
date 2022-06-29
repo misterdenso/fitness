@@ -30,6 +30,7 @@ while month(@i)<=month(@DateEnd) and  year(@i)<=year(@DateEnd)
 				@End = DATEADD(SECOND,-1, DATEADD(month, DATEDIFF(month, 0, @i) + 1, 0) )
 
         exec dbo.UpdatePercent  @Start, @End
+		exec dbo.UpdateRetentionRate @Start, @End
 
 		select @i = DATEADD(month,1,@i)
 

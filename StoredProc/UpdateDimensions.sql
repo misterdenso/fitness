@@ -14,18 +14,46 @@ AS
 BEGIN
 
 
-delete	
-from	DWH.[dbo].[Clubs]
+MERGE DWH.[dbo].[Clubs] as t1
+USING (select	fact.ClubID,
+				T1._Description
+		from
+		(select distinct
+				[ClubID]
+		from	DWH.[dbo].[CardSales]) fact
+		join
+		dbo._Reference79X1 T1 on fact.ClubID=sys.fn_varbintohexstr(t1._IDRRef)) as t2
+ON  t1.Code = t2.ClubID
+when matched then  
+    update set [Name] = [_Description]
+when not matched then
+    INSERT  ([Code], [Name])
+    values (t2.ClubID, t2._Description);
 
-insert into DWH.[dbo].[Clubs]
-select	fact.ClubID,
-		T1._Description
-from
-(select distinct
-		[ClubID]
-from	DWH.[dbo].[CardSales]) fact
-join
-dbo._Reference79X1 T1 on fact.ClubID=sys.fn_varbintohexstr(t1._IDRRef)
+
+
+-- select	fact.ClubID,
+--         T1._Description
+-- into    #Clubs
+-- from
+-- (select distinct
+--         [ClubID]
+-- from	DWH.[dbo].[CardSales]) fact
+-- join
+-- dbo._Reference79X1 T1 on fact.ClubID=sys.fn_varbintohexstr(t1._IDRRef)
+
+
+-- MERGE DWH.[dbo].[Clubs] as t1
+-- USING #Clubs as t2
+-- ON  t1.Code = t2.ClubID
+-- when matched then  
+--     update set [Name] = [_Description]
+-- when not matched then
+--     INSERT  ([Code], [Name])
+--     values (t2.ClubID, t2._Description);
+
+
+-- drop table #Clubs
 
 
 
@@ -69,6 +97,16 @@ INSERT INTO DWH.[dbo].[Managers]
            ,'Остальные'
            ,'Остальные')
 
+INSERT INTO DWH.[dbo].[Managers]
+           ([Code]
+           ,[Name]
+           ,[ShortName]
+           ,[Department])
+     VALUES
+           ('0x00000000000000000000000000000000'
+           ,'Остальные'
+           ,'Остальные'
+           ,'Остальные')
 
 
 --exec sp_executesql N'SELECT
