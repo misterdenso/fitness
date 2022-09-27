@@ -131,14 +131,38 @@ INSERT INTO dwh.[dbo].[Items]
            ,[OrangeArt]
            ,[Folder]
            ,[ItemDepartment]
-           ,[ItemType])
+           ,[ItemType]
+           ,[ItemGroup])
 SELECT 
 sys.fn_varbintohexstr(T1._IDRRef),
 T1._Description,
 T1._Fld6831,
 T2._Description,
 T3._Description,
-sys.fn_varbintohexstr(T1._Fld833RRef)
+sys.fn_varbintohexstr(T1._Fld833RRef),
+case
+		when T1._Fld803 like '0'
+			then 'бесплатно'
+		when T1._Fld803 like '1'
+			then 'короткая'
+		when T1._Fld803 like '2'
+			then 'длинная 9+'
+		when T1._Fld803 like '3'
+			then '5-8 мес'
+		when T1._Fld803 like '4'
+			then 'посещения'
+		when T1._Fld803 like '5'
+			then 'VIP'
+		when T1._Fld803 like '6'
+			then 'рекайринг'
+		when T1._Fld803 like '7'
+			then 'детская/юниор'
+		when T1._Fld803 like '8'
+			then 'корп.холдинг/для своих'
+		when T1._Fld803 like '9'
+			then 'день/утро/фитнес-день'
+		else 'Другой'
+end
 FROM dbo._Reference56X1 T1
 LEFT OUTER JOIN dbo._Reference56X1 T2
 ON (T1._ParentIDRRef = T2._IDRRef) AND (T2._Fld4704 = 0)
