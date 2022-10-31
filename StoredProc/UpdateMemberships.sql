@@ -1,7 +1,27 @@
- declare       @Date datetime2(3)
+USE [fitfinal]
+GO
 
+/****** Object:  StoredProcedure [dbo].[UpdateMemberships]    Script Date: 31.10.2022 15:48:37 ******/
+DROP PROCEDURE [dbo].[UpdateMemberships]
+GO
 
-select	@Date='20221031'
+/****** Object:  StoredProcedure [dbo].[UpdateMemberships]    Script Date: 31.10.2022 15:48:37 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [dbo].[UpdateMemberships]
+		@Date datetime2(3)
+AS
+BEGIN
+
 
 select	@Date = dateadd(year,2000,@Date)
 
@@ -59,10 +79,19 @@ INSERT INTO dwh.[dbo].[Memberships]
            ([Date]
            ,[ClientID]
            ,[ClubID])
-select      dateadd(year,-2000,@Date),
+select      cast(dateadd(year,-2000,@Date) as date),
             sys.fn_varbintohexstr(_Q_000_F_000_RRRef),
             sys.fn_varbintohexstr(_Q_000_F_001RRef)
 from        ##tt385
 
 
 drop table ##tt385
+
+
+
+
+
+END
+GO
+
+
