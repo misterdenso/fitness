@@ -69,7 +69,7 @@ N'denso',0,0,@Date,0xBF3C881733694B8F462E8D8B9E26692F,0,0,0xBF3C881733694B8F462E
 
 delete	
 from	dwh.[dbo].[Memberships]
-where	[Date] = dateadd(year,-2000,@Date)
+where	[Date] = cast(dateadd(year,-2000,@Date) as date)
 
 
 
