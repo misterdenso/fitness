@@ -1,1 +1,2 @@
-dbo.UpdatePercentMonth '20220101','20220801'
+select *
+from dbo.visitors
