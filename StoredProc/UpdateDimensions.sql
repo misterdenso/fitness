@@ -78,7 +78,11 @@ from	DWH.[dbo].[CardSales]
 union all
 select distinct
 		[ManagerID]
-from	DWH.[dbo].Workouts) fact 
+from	DWH.[dbo].Workouts
+union all
+select distinct
+		[ManagerID]
+from	DWH.[dbo].BarSales) fact 
 join
 dbo._Reference73X1 T1 on fact.[ManagerID]=sys.fn_varbintohexstr(t1._IDRRef)
 LEFT OUTER JOIN dbo._Reference3831 T2
@@ -132,13 +136,15 @@ INSERT INTO dwh.[dbo].[Items]
            ,[Folder]
            ,[ItemDepartment]
            ,[ItemType]
-           ,[ItemGroup])
-SELECT 
+           ,[ItemGroup]
+           ,[BarGroup1]
+           ,[BarGroup2])
+SELECT
 sys.fn_varbintohexstr(T1._IDRRef),
 T1._Description,
 T1._Fld6831,
-T2._Description,
 T3._Description,
+T2._Description,
 sys.fn_varbintohexstr(T1._Fld833RRef),
 case
 		when T1._Fld803 like '0'
@@ -162,16 +168,20 @@ case
 		when T1._Fld803 like '9'
 			then 'день/утро/фитнес-день'
 		else 'Другой'
-end
+end,
+T3._Description,
+T4._Description
 FROM dbo._Reference56X1 T1
-LEFT OUTER JOIN dbo._Reference56X1 T2
-ON (T1._ParentIDRRef = T2._IDRRef) AND (T2._Fld4704 = 0)
-LEFT OUTER JOIN dbo._Reference3831 T3
-ON (T1._Fld3835RRef = T3._IDRRef) AND (T3._Fld4704 = 0)
+LEFT OUTER JOIN dbo._Reference3831 T2
+ON (T1._Fld3835RRef = T2._IDRRef) AND (T2._Fld4704 = 0)
+LEFT OUTER JOIN dbo._Reference56X1 T3
+ON (T1._ParentIDRRef = T3._IDRRef) AND (T3._Fld4704 = 0)
+LEFT OUTER JOIN dbo._Reference56X1 T4
+ON (T3._ParentIDRRef = T4._IDRRef) AND (T4._Fld4704 = 0)
 WHERE (T1._Fld4704 = 0)
 		and (sys.fn_varbintohexstr(T1._IDRRef) in (select distinct [ItemID] from	DWH.[dbo].[CardSales])
-			or sys.fn_varbintohexstr(T1._IDRRef) in (select distinct [ItemID] from	DWH.[dbo].Workouts))
-
+			or sys.fn_varbintohexstr(T1._IDRRef) in (select distinct [ItemID] from	DWH.[dbo].Workouts)
+			or sys.fn_varbintohexstr(T1._IDRRef) in (select distinct [ItemID] from	DWH.[dbo].[FitnessSales]))
 
 
 delete
